@@ -1,0 +1,27 @@
+{
+  "name": "blog-project",
+  "version": "1.0.0",
+  "description": "BlogPost is the platform what you can share everything you want.",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node ./src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/berkayclk/blog-project.git"
+  },
+  "keywords": [
+    "blog",
+    "post"
+  ],
+  "author": "Berkay Çelik",
+  "bugs": {
+    "url": "https://github.com/berkayclk/blog-project/issues"
+  },
+  "homepage": "https://github.com/berkayclk/blog-project#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.0",
+    "morgan": "~1.9.1"
+  }
+}
