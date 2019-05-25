@@ -1,3 +1,4 @@
+require("dotenv/config");//load config in .env file 
 var express = require('express');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
