@@ -62,3 +62,6 @@ typings/
 
 # package-lock
 package-lock*
+
+# IDE config folder
+.vscode
