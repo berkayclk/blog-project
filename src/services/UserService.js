@@ -44,6 +44,21 @@ class UserService{
         });
      }
 
+     findByToken(userId, token){
+        return new Promise((resolve,reject) =>{
+             
+             Users.findOne({ 
+                 _id : userId,
+                 "AuthTokens.token":token
+              }, (err,userResult) =>{
+                if( err )
+                    reject("Token is not found!");
+
+                resolve(userResult);
+             });
+        });
+     }
+
     createUser(user){
         var user = UserUtil.pickNonSensitiveObject(user);
         var userModel = new Users(user);
