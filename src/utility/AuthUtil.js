@@ -9,7 +9,7 @@ module.exports.getExpireDate = () => {
 }
 
 module.exports.generateToken = function (User) {
-    var expireDate = getExpireDate();
+    var expireDate = this.getExpireDate();
     var token = jwt.sign({ _id: User._id.toHexString(), expireDate }, AuthConstants.JWT_SECRET).toString();
     var tokenModel = { expireDate, token };
     return tokenModel;
