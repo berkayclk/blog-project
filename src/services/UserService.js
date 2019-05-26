@@ -29,6 +29,7 @@ class UserService{
     }
 
     createUser(user){
+        var user = UserUtil.pickNonSensitiveObject(user);
         var userModel = new Users(user);
         return userModel.save();
      }
