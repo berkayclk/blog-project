@@ -1,6 +1,9 @@
 const mongodb = require('../database/mongodb');
-const AuthUtil = require('../utility/AuthUtil');
 var validator = require("validator");
+
+const AuthUtil = require('../utility/AuthUtil');
+const ApplicationConstants = require('../constants/ApplicationConstants');
+
 
 var userSchema = mongodb.Schema({
 
@@ -8,14 +11,21 @@ var userSchema = mongodb.Schema({
     Username:{type:String,required:true,trim:true,unique:true},
     Password:{type:String,required:true,trim:true,minLength:8},
     Contact:{
-        Phone:{type:String,trim:true},
+        Phone:{
+            type:String,
+            trim:true,
+            validate: (value) => {
+                return validator.isMobilePhone(value,ApplicationConstants.LOCALE);
+            }
+        },
         Email:{
             type:String,
             trim:true,
             required:true, 
             validate: (value) => {
-                return validator.isEmail(value)
-            }}
+                return validator.isEmail(value);
+            }
+        }
     },
     CreateDate:{type:Date,default:Date.now},
     Follower:[{
