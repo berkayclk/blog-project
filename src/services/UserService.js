@@ -50,6 +50,28 @@ class UserService{
         return userModel.save();
      }
 
+     saveAuthToken(user, AuthToken){
+        var userModel = new Users(user);
+        if( !userModel.AuthTokens )
+            userModel.AuthTokens = [];
+            
+        userModel.AuthTokens.push( AuthToken );
+        return userModel.save();
+     }
+
+     removeAuthToken(user, AuthToken){
+        return new Promise( (resolve, reject )=>{
+            Users.updateOne(
+                { _id : user._id  },
+                { $pull : { AuthTokens :{  token: AuthToken.token  } } },
+                { new:true, runValidators:true },
+                (err, res) =>{
+                    if(err) reject(err);
+                    resolve(res);        
+                }
+            )
+        });
+     }
      updateUser(user){
         return new Promise((resolve,reject) =>{
             
