@@ -1,4 +1,5 @@
 var Posts = require("../models/Post");
+const PostStatus = require("../constants/PostConstants").PostStaus;
 
 class PostService{
 
@@ -18,7 +19,6 @@ class PostService{
        return new Promise((resolve,reject) =>{
             
             Posts.findById(postId, (err,res) =>{
-                console.log(err,res);
                 if( err )
                     reject(err);
                 
@@ -27,6 +27,35 @@ class PostService{
        });
     }
 
+    findByUser(User){
+        return new Promise((resolve,reject) =>{
+
+            var Followings = User.Following.map( followingUser => followingUser.id);
+
+             //User can view all own posts and public posts of followigs.
+            var conditions = {
+                $or : [
+                    {
+                        Author : { $in : Followings },
+                        Status : PostStatus.PUBLIC
+                    },
+                    {
+                        Author: User._id
+                    }
+                ]
+                
+            };
+
+            Posts.find(conditions, (err,res) =>{
+                if( err )
+                    reject(err);
+                
+                resolve(res);
+            });
+
+       });
+    }
+       
     createPost(post){
         var postModel = new Posts(post);
         return postModel.save();
