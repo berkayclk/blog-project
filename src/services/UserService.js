@@ -1,6 +1,6 @@
 var Users = require("../models/User");
 var UserUtil = require("../utility/UserUtil");
-
+const CryptoUtil = require("../utility/CryptoUtil");
 
 class UserService{
 
@@ -27,6 +27,22 @@ class UserService{
             });
        });
     }
+
+    findByUsernamePassword(Username,Password){
+        return new Promise((resolve,reject) =>{
+             
+             Users.findOne({ Username }, (err,userResult) =>{
+                if( err )
+                    reject("Username is wrong!");
+                
+                var encryptedPass = userResult.Password;
+                
+                CryptoUtil.compare(encryptedPass,Password)
+                                    .then( res => { resolve(userResult);})
+                                    .catch( err => reject("Wrong password!"))
+             });
+        });
+     }
 
     createUser(user){
         var user = UserUtil.pickNonSensitiveObject(user);
