@@ -15,6 +15,16 @@ module.exports.generateToken = function (User) {
     return tokenModel;
 };
 
+module.exports.parseToken = (token)=>{
+    
+    var payload = null;
+    try {
+        payload = jwt.verify(token, AuthConstants.JWT_SECRET);
+    } catch (e) {  }
+
+    return payload;
+}
+
 module.exports.generateHeaderKeyValue = function (token) {
    return {key : AuthConstants.AUTH_HEADER, value: AuthConstants.BEARER + token};
 };
