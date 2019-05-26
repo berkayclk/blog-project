@@ -20,7 +20,6 @@ class UserService{
        return new Promise((resolve,reject) =>{
             
             Users.findById(userId, (err,res) =>{
-                console.log(err,res);
                 if( err )
                     reject(err);
                 
@@ -61,19 +60,16 @@ class UserService{
      }
 
      followUser( followerId, followingId ){
-        console.log(followerId,followingId);
        return new Promise( (resolve,reject) =>{
  
             var followerUser, followingUser;
             this.findById(followerId) //find follower by Id
                         .then(followerRes => {
                             followerUser = followerRes;
-                            console.log(followerUser);
                             return this.findById(followingId); //find following by Id
                         })
                         .then( followingRes =>{
                             followingUser = followingRes;
-                            console.log(followingUser);
                             return this.createRelation(followerUser, followingUser); //create realtion between follower and following.
                         })
                         .then( res=> {
@@ -94,12 +90,10 @@ class UserService{
             this.findById(followerId) //find follower by Id
                         .then(followerRes => {
                             followerUser = followerRes;
-                            console.log(followerUser);
                             return this.findById(followingId); //find following by Id
                         })
                         .then( followingRes =>{
                             followingUser = followingRes;
-                            console.log(followingUser);
                             return this.dropRelation(followerUser, followingUser); //drop realtion between follower and following.
                         })
                         .then( res=> {
@@ -110,7 +104,7 @@ class UserService{
                         });
        });
     }
-    
+
      createRelation( followerUser,followingUser){
         return new Promise( (resolve,reject)=>{
            
@@ -165,7 +159,6 @@ class UserService{
            );
 
            Users.bulkWrite(updateOperations,(bulkErr,bulkRes)=>{
-               //console.log(bulkErr,bulkRes);
                if( bulkErr || bulkRes.writeErrors )
                    reject(bulkErr || bulkRes.writeErrors);
 
