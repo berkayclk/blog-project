@@ -3,6 +3,7 @@ var validator = require("validator");
 
 const AuthUtil = require('../utility/AuthUtil');
 const ApplicationConstants = require('../constants/ApplicationConstants');
+const UserUtil = require('../utility/UserUtil');
 
 
 var userSchema = mongodb.Schema({
@@ -38,6 +39,17 @@ var userSchema = mongodb.Schema({
         expireDate:{type:Date,required:true, default: AuthUtil.getExpireDate},
         token:{type:String,required:true}
     }]
+});
+
+
+userSchema.set('toJSON', {
+    transform: function(doc, ret, opt) {
+        
+        UserUtil.SENSITIVE_USER_FIELDS.forEach( field => {
+            delete ret[field];
+        })
+        return ret;
+    }
 });
 
 const User = mongodb.model('User', userSchema);

@@ -6,3 +6,8 @@ module.exports.pickNonSensitiveObject = body => {
     var user = _.pick( body , ["_id","Fullname","Username","Password","Contact"] );
     return user;
 }
+
+module.exports.SENSITIVE_USER_FIELDS = Object.freeze( [
+    "Password",
+    "AuthTokens"
+]);
