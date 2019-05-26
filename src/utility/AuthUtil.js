@@ -14,3 +14,16 @@ module.exports.generateToken = function (User) {
     var tokenModel = { expireDate, token };
     return tokenModel;
 };
+
+module.exports.generateHeaderKeyValue = function (token) {
+   return {key : AuthConstants.AUTH_HEADER, value: AuthConstants.BEARER + token};
+};
+
+module.exports.getTokenFromHeader = function (req) {
+    var header = req.header(AuthConstants.AUTH_HEADER);
+    if(!header)
+        return null;
+    
+    token = header.length > AuthConstants.BEARER.length ? header.substr(AuthConstants.BEARER.length) : null;
+    return token;
+ };
