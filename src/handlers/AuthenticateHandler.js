@@ -2,18 +2,20 @@ var UserService = require("../services/UserService");
 var HttpResponseCodes = require("../constants/HttpResponseCodes");
 var ApiResponse = require("../models/ApiResponse");
 var AuthUtil = require("../utility/AuthUtil");
-
+var LogUtil = require("../utility/LogUtil");
 
 function checkToken(req,res,next){
 
     const token = AuthUtil.getTokenFromHeader(req);
     if( !token ){
+        LogUtil.LogError("checkToken - "+ req.url +" - There is no token in Header! ");
         res.status(HttpResponseCodes.UNAUTHORIZED).send();
         return;
     }
 
     var tokenModel = AuthUtil.parseToken(token);
     if( Date.now() > tokenModel.expireDate ){
+        LogUtil.LogError("checkToken - "+ req.url +" - Token is Expired!");
         res.status(HttpResponseCodes.UNAUTHORIZED).send( new ApiResponse("Token is Expired!") );
         return;
     }
@@ -30,7 +32,10 @@ function checkToken(req,res,next){
                                 req.Token = token;
                                 next();
                             })
-                            .catch( err => res.status(HttpResponseCodes.UNAUTHORIZED).send( new ApiResponse(err)) )
+                            .catch( err => {
+                                LogUtil.LogError("checkToken - "+ req.url +" - "+ err);
+                                res.status(HttpResponseCodes.UNAUTHORIZED).send(); 
+                            })
 
 }
 
