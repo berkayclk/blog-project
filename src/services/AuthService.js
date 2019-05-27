@@ -41,7 +41,7 @@ class AuthService{
                             var tokenModel = AuthUtil.generateToken(userResult);
                             UserService.saveAuthToken(userResult,tokenModel)
                                             .then( res => resolve(tokenModel.token))
-                                            .catch(err => reject(err));
+                                            .catch(err => resolve());
                         })
                         .catch( err => reject(err));
         });
