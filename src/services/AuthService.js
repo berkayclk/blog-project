@@ -12,13 +12,12 @@ class AuthService{
             UserService.findByUsernamePassword(User.Username,User.Password)
                                 .then(userResult =>{
                                     var tokenModel = AuthUtil.generateToken(userResult);
-                                    console.log("hayd",tokenModel);
                                     UserService.saveAuthToken(userResult,tokenModel)
                                                     .then( res => resolve(tokenModel.token))
                                                     .catch(err => reject(err));
 
                                 })
-                                .catch( err => {console.log(err);reject(err)});
+                                .catch( err => { reject(err)});
         });
     }
 
