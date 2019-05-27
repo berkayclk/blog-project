@@ -14,6 +14,13 @@ function checkToken(req,res,next){
     }
 
     var tokenModel = AuthUtil.parseToken(token);
+    if( !tokenModel )
+    {
+        LogUtil.LogError("checkToken - "+ req.url +" - There is no valid token in Header! ");
+        res.status(HttpResponseCodes.UNAUTHORIZED).send();
+        return;
+    }
+
     if( Date.now() > tokenModel.expireDate ){
         LogUtil.LogError("checkToken - "+ req.url +" - Token is Expired!");
         res.status(HttpResponseCodes.UNAUTHORIZED).send( new ApiResponse("Token is Expired!") );
