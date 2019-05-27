@@ -121,7 +121,10 @@ class UserService{
 
      followUser( followerId, followingId ){
        return new Promise( (resolve,reject) =>{
- 
+
+            if( followerId == followingId )
+                reject("Follower and following is same!");
+                
             var followerUser, followingUser;
             this.findById(followerId) //find follower by Id
                         .then(followerRes => {
