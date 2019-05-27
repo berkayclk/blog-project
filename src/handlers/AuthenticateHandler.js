@@ -12,7 +12,7 @@ function checkToken(req,res,next){
     
     var tokenModel = AuthUtil.parseToken(token);
     if( Date.now() > tokenModel.expireDate )
-        res.status(401).send( new ApiResponse("Token is Expired!") );
+        res.status(HttpResponseCodes.UNAUTHORIZED).send( new ApiResponse("Token is Expired!") );
     
     UserService.findByToken(tokenModel._id, token)
                             .then(AuthUser => {
@@ -20,7 +20,7 @@ function checkToken(req,res,next){
                                 req.Token = token;
                                 next();
                             })
-                            .catch( err => res.status(401).send( new ApiResponse(err)) )
+                            .catch( err => res.status(HttpResponseCodes.UNAUTHORIZED).send( new ApiResponse(err)) )
 
 }
 
