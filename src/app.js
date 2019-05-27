@@ -9,6 +9,7 @@ var ApplicationConstants = require("./constants/ApplicationConstants");
 //Controllers
 var UserController = require("./api/UserController");
 var AuthController = require("./api/AuthController");
+var PostController = require("./api/PostController");
 
 var app = express();
 
@@ -22,6 +23,7 @@ app.set(ApplicationConstants.PORT_KEY, ApplicationConstants.DEFAULT_PORT);
 //Api Routes
 app.use("/api/user", UserController);
 app.use("/api/auth", AuthController);
+app.use("/api/post", PostController);
 
 //start listening port
 app.listen(app.get(ApplicationConstants.PORT_KEY),() => {
