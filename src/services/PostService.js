@@ -27,6 +27,34 @@ class PostService{
        });
     }
 
+    findByPostIdAndUser(postId,User){
+        return new Promise((resolve,reject) =>{
+             
+            var Followings = User.Following.map( followingUser => followingUser.id);
+
+            //User can view all own posts and public posts of followigs.
+            var conditions = {
+                 _id: postId,
+                $or : [
+                    {
+                        Author : { $in : Followings },
+                        Status : PostStatus.PUBLIC
+                    },
+                    {
+                        Author: User._id
+                    }
+                ]
+           };
+
+           Posts.find(conditions, (err,res) =>{
+               if( err )
+                   reject(err);
+               
+               resolve(res);
+           });
+        });
+     }
+
     findByUser(User){
         return new Promise((resolve,reject) =>{
 
