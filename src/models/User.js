@@ -76,15 +76,21 @@ userSchema.pre("updateMany", function(next){
 
 function encryptPassword(user,next){
     
-    if(!user.Password || ( user.isModified && !user.isModified("Password") ) )
-        return next();
-
-    CryptoUtil.encrypt(user.Password)
-                    .then(encrypted =>{
-                        user.Password = encrypted;
-                        next();
-                    })
-                    .catch(err=>{next();});
+    var isSaveOperation = user.isModified &&  typeof(user.isModified) === "function";
+    var isPasswordUpdating = user && user.Password &&  ( !isSaveOperation  ||  user.isModified("Password"));
+    
+    if( isPasswordUpdating ){
+        
+        CryptoUtil.encrypt(user.Password)
+                        .then(encrypted =>{
+                            user.Password = encrypted;
+                            next();
+                        })
+                        .catch(err=>{next();});
+    }else{
+        next();
+    }
+    
         
 }
 
