@@ -26,6 +26,6 @@ JWT_SECRET=secret
 
 
 #### TODO
-  - Swagger Documantation  
+  - Swagger Documentation  
   - Use passportJs to authorization  
   - Create unit tests
