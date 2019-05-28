@@ -18,7 +18,7 @@ app.use(logger(ApplicationConstants.MORGAN_LOG_PATTERN));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.set(ApplicationConstants.PORT_KEY, ApplicationConstants.DEFAULT_PORT);
+app.set(ApplicationConstants.PORT_KEY, ApplicationConstants.PORT);
 
 //Api Routes
 app.use("/api/user", UserController);
