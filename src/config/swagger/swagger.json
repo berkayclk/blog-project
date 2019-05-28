@@ -137,10 +137,10 @@
                     "description": "User was succesfully logged out."
                 },
                 "401": {
-                    "description": "User could not be logged out.",
-                    "schema":{
-                      "$ref":"#/definitions/ApiErrorResponse"
-                    }   
+                  "description": "Could not log out. Maybe, User token that sending in header, is not valid!",
+                  "schema":{
+                    "$ref":"#/definitions/ApiErrorResponse"
+                  }   
                 }
             }
         }
@@ -169,6 +169,12 @@
                 "schema":{
                   "$ref":"#/definitions/ApiErrorResponse"
                 }   
+            },
+            "401": {
+              "description": "User token that sending in header, is not valid!",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
             }
         }
       }
@@ -199,7 +205,13 @@
                 "schema":{
                   "$ref":"#/definitions/ApiErrorResponse"
                 }   
-            }
+            },
+            "401": {
+              "description": "User token that sending in header, is not valid!",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+           }
         }
       }
     },
@@ -229,7 +241,14 @@
                 "schema":{
                   "$ref":"#/definitions/ApiErrorResponse"
                 }   
-            }
+            },
+            "401": {
+              "description": "User token that sending in header, is not valid!",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+           }
+            
         }
       }
     },
