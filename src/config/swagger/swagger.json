@@ -35,7 +35,193 @@
     "application/json"
   ],
   "paths": {
+    "/auth/register": {
+        "put": {
+            "operationId":"registerUser",
+            "tags": ["Authentication"],
+            "summary":"Create new user in system",
+            "parameters":[
+                {
+                    "name": "Register User",
+                    "in": "body",
+                    "description": "User that will be created",
+                    "schema": {
+                        "type":"Object",
+                        "properties":{
+                            "User":{
+                                "$ref": "#/definitions/UserToRegister"
+                            }
+                        }
+                        
+                    }
+            }],
+            "responses": {
+                "200": {
+                    "description": "User was succesfully created but token could not be generated."
+                },
+                "201": {
+                    "description": "User was succesfully created.",
+                    "headers":{  
+                        "Authorization":{
+                            "type":"string",
+                            "format":"Bearer",
+                            "description":"token of authenticated user with format like 'Bearer xxxxx'"
+                        }
+                    }
+                },
+                "400": {
+                    "description": "User could not be created."
+                }
+                
+            }
+        }
+    },
+    "/auth/login": {
+        "post": {
+            "operationId":"loginUser",
+            "tags": ["Authentication"],
+            "summary":"Login system and get token in header",
+            "parameters":[
+                {
+                    "name": "Login User",
+                    "in": "body",
+                    "description": "Credentials that will be login to system.",
+                    "schema": {
+                        "type":"Object",
+                        "properties":{
+                            "Credentials":{
+                                "$ref": "#/definitions/Credentials"
+                            }
+                        }
+                    }
+                }
+            ],
+            "responses": {
+                "201": {
+                    "description": "User is logged in.",
+                    "headers":{  
+                        "Authorization":{
+                            "type":"string",
+                            "format":"Bearer",
+                            "description":"token of authenticated user with format like 'Bearer xxxxx'"
+                        }
+                    }
+                },
+                "400": {
+                    "description": "User could not be logged in."
+                }
+                
+            }
+        }
+    },
+    "/auth/logout": {
+        "get": {
+            "operationId":"logoutUser",
+            "tags": ["Authentication"],
+            "summary":"Logout authenticated user who has token in heeader",
+            "produces":[],
+            "headers":[{  
+                "Authorization":{
+                    "type":"string",
+                    "format":"Bearer",
+                    "description":"token of authenticated user with format like 'Bearer xxxxx'"
+                }
+            }],
+            "responses": {
+                "200": {
+                    "description": "User was succesfully logged out."
+                },
+                "401": {
+                    "description": "User could not be logged out."
+                }
+                
+            }
+        }
+    }
   },
   "definitions": {
+    "User": {
+        "required": [
+            "Username",
+            "Password",
+            "Fullname"
+        ],
+        "properties": {
+            "_id": {
+                "type": "string",
+                "uniqueItems": true
+            },
+            "Username": {
+                "type": "string"
+            },
+            "Fullname":{
+                "type": "string"
+            },
+            "Contact": {
+                "required": [
+                    "Email"
+                ],
+                "properties": {
+                    "Email": {
+                        "type": "string"
+                    },
+                    "Phone": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Following":{
+                    "type":"array"
+            },
+            "Follower":{
+                    "type":"array"
+            }
+        }
+    },
+    "UserToRegister": {
+        "required": [
+            "Username",
+            "Password",
+            "Fullname"
+        ],
+        "properties": {
+            "Username": {
+                "type": "string"
+            },
+            "Password": {
+                "type": "string"
+            },
+            "Fullname":{
+                "type": "string"
+            },
+            "Contact": {
+                "required": [
+                    "Email"
+                ],
+                "properties": {
+                    "Email": {
+                        "type": "string"
+                    },
+                    "Phone": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "Credentials":{
+        "required":[
+            "Username",
+            "Password"
+        ],
+        "properties":{
+            "Username": {
+                "type": "string"
+            },
+            "Password": {
+                "type":"string"
+            }
+        }                   
+    }
   }
 }
