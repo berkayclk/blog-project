@@ -32,7 +32,7 @@ authController.post("/login", (req,res,next)=>{
 
 });
 
-authController.post("/logout", checkToken ,(req,res,next)=>{
+authController.get("/logout", checkToken ,(req,res,next)=>{
     
     AuthService.log(req.AuthUser, req.Token)
                 .then( result => {
