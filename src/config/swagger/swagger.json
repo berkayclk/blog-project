@@ -21,7 +21,7 @@
       },
       {
           "name": "Posts",
-          "description": "API to manage share and display Post."
+          "description": "API to share and display Posts."
       }
   ],
   "schemes": [
@@ -232,6 +232,187 @@
             }
         }
       }
+    },
+    "/post": {
+      "get":{
+        "operationId":"getPosts",
+        "tags":["Posts"],
+        "summary":"Returns posts that authenticated user can display.",
+        "parameters":[
+            {
+                "name": "Authorization",
+                "in": "header",
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )"
+          }
+        ],
+        "responses": {
+            "200": {
+                "description": "Posts were successfully fetched.",
+                "schema":{
+                  "$ref":"#/definitions/ApiPostsResponse"
+                }   
+            },
+            "401": {
+              "description": "User token that sending in header, is not valid!",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+             },
+            "404": {
+                "description": "Post could not be fetched.",
+                "schema":{
+                  "$ref":"#/definitions/ApiErrorResponse"
+                }   
+            }
+        }
+      }
+    },
+    "/post/createPost": {
+      "post": {
+        "operationId":"createPost",
+        "tags": ["Posts"],
+        "summary":"Create new post for authenticated user.",
+        "parameters":[
+            {
+                "name": "Post",
+                "in": "body",
+                "description": "User that will be created",
+                "schema": {
+                    "type":"Object",
+                    "properties":{
+                        "Post":{
+                            "$ref": "#/definitions/PostToCreate"
+                        }
+                    }
+                    
+                }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "User token that given with login. (Authorization: Bearer xxxxx )"
+          }
+        ],
+        "responses": {
+            "200": {
+                "description": "Post was succesfully created",
+                "schema":{
+                  "$ref":"#/definitions/ApiPostResponse"
+                }
+            },
+            "400": {
+                "description": "There is no Post object in request body.",
+                "schema":{
+                  "$ref":"#/definitions/ApiErrorResponse"
+                }   
+            },
+            "401": {
+              "description": "User token that sending in header, is not valid!",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+             },
+            "404": {
+                "description": "Post could not be created.",
+                "schema":{
+                  "$ref":"#/definitions/ApiErrorResponse"
+                }   
+            }
+        }
+    }
+    },
+    "/post/{:postId}": {
+      "get":{
+        "operationId":"getPost",
+        "tags":["Posts"],
+        "summary":"Returns a post with postId that authenticated user can display.",
+        "parameters":[
+            {
+                "name": "Authorization",
+                "in": "header",
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )"
+            },
+            {
+              "name": "postId",
+              "in": "query",
+              "description": "it's id of post which will be displayed"
+            }
+        ],
+        "responses": {
+            "200": {
+              "description": "Post was succesfully fetched",
+              "schema":{
+                "$ref":"#/definitions/ApiPostResponse"
+              }
+            },
+            "400": {
+                "description": "There is no postId in request query.",
+                "schema":{
+                  "$ref":"#/definitions/ApiErrorResponse"
+                }   
+            },
+            "401": {
+              "description": "User token that sending in header, is not valid!",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+             },
+            "404": {
+                "description": "Post could not be found.",
+                "schema":{
+                  "$ref":"#/definitions/ApiErrorResponse"
+                }   
+            }
+        }
+      }
+    },
+    "/post/switchStatus/{:postId}": {
+      "get":{
+        "operationId":"switchStatus",
+        "tags":["Posts"],
+        "summary":"Switch status of post between public and private",
+        "parameters":[
+            {
+                "name": "Authorization",
+                "in": "header",
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )"
+            },
+            {
+              "name": "postId",
+              "in": "query",
+              "description": "it's id of post which will switch status."
+            }
+        ],
+        "responses": {
+            "201": {
+                "description": "Post's status was successfully switched."
+            },
+            "400": {
+              "description": "There is no postId in request query.",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+            },
+            "401": {
+              "description": "User token that sending in header, is not valid!",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+           },
+            "403": {
+              "description": "Authenticated user is not owner of this post.",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+           },
+            "404": {
+                "description": "Post could not be found or status could not be switched.",
+                "schema":{
+                  "$ref":"#/definitions/ApiErrorResponse"
+                }   
+            }
+        }
+      }
     }
   },
   "definitions": {
@@ -265,13 +446,37 @@
                     }
                 }
             },
+            "CreateDate":"date",
             "Following":{
-                    "type":"array"
+                "type":"array",
+                "items":{
+                  "type":"string"
+                }
             },
             "Follower":{
-                    "type":"array"
+                "type":"array",
+                "items":{
+                  "type":"string"
+                }
             }
         }
+    },
+    "Post": {
+      "required":[
+        "Header",
+        "Body",
+        "Author",
+        "Status"
+      ],
+      "properties":{
+        "_id":{"type":"string"},
+        "Header":{"type":"string"},
+        "Body":{"type":"string"},
+        "Author":{"type":"string"},
+        "Location":{"type":"string"},
+        "Status":{"type": "string", "enum":["public","private"]},
+        "CreateDate":{"type":"date"}
+      }
     },
     "UserToRegister": {
         "required": [
@@ -304,6 +509,19 @@
             }
         }
     },
+    "PostToCreate": {
+      "required":[
+        "Header",
+        "Body",
+        "Status"
+      ],
+      "properties":{
+        "Header":{"type":"string"},
+        "Body":{"type":"string"},
+        "Location":{"type":"string"},
+        "Status":{"type": "string", "enum":["public","private"]}
+      }
+    },
     "Credentials":{
         "required":[
             "Username",
@@ -330,6 +548,26 @@
           "result":{
             "type":"object",
             "$ref":"#/definitions/User"
+        }
+      }
+    },
+    "ApiPostResponse": {
+      "properties":{
+        "result":{
+          "type":"object",
+          "items":{
+            "$ref":"#/definitions/Post"
+          }
+        }
+      }
+    },
+    "ApiPostsResponse": {
+      "properties":{
+        "result":{
+          "type":"array",
+          "items":{
+            "$ref":"#/definitions/Post"
+          }
         }
       }
     }
