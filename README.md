@@ -13,8 +13,13 @@
   
 To specify project, Tou can create an env file in project. Dotenv module will be read this. 
  #### Sample .env file
+ > ##### These values is default in app.
+
 ```
+HOST=localhost
 PORT=8080
+BASE_PATH=/api
+
 LOCALE=tr-TR
 MONGODB_URI=mongodb://localhost:27017/blog
 
