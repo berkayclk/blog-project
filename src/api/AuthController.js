@@ -3,6 +3,8 @@ var authController = express.Router();
 
 var checkToken = require("../handlers/AuthenticateHandler");
 var AuthService = require("../services/AuthService");
+
+var ApiResponse = require("../models/ApiResponse");
 const HttpResponseCode = require("../constants/HttpResponseCodes");
 var AuthUtil = require("../utility/AuthUtil");
 var LogUtil = require("../utility/LogUtil");
