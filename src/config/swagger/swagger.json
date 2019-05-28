@@ -125,13 +125,13 @@
             "tags": ["Authentication"],
             "summary":"Logout authenticated user who has token in heeader",
             "produces":[],
-            "headers":[{  
-                "Authorization":{
-                    "type":"string",
-                    "format":"Bearer",
-                    "description":"token of authenticated user with format like 'Bearer xxxxx'"
-                }
-            }],
+            "parameters":[
+              {
+                "name": "Authorization",
+                "in": "header",
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )"
+              }
+            ],
             "responses": {
                 "200": {
                     "description": "User was succesfully logged out."
