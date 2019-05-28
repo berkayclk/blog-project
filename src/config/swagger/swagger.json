@@ -53,7 +53,8 @@
                             }
                         }
                         
-                    }
+                    },
+                    "required":true
             }],
             "responses": {
                 "200": {
@@ -95,7 +96,8 @@
                                 "$ref": "#/definitions/Credentials"
                             }
                         }
-                    }
+                    },
+                    "required":true
                 }
             ],
             "responses": {
@@ -129,7 +131,8 @@
               {
                 "name": "Authorization",
                 "in": "header",
-                "description": "User token that given with login. (Authorization: Bearer xxxxx )"
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )",
+                "required":true
               }
             ],
             "responses": {
@@ -154,6 +157,7 @@
             {
                 "name": "Authorization",
                 "in": "header",
+                "required":true,
                 "description": "User token that given with login. (Authorization: Bearer xxxxx )"
           }
         ],
@@ -188,12 +192,14 @@
             {
                 "name": "Authorization",
                 "in": "header",
-                "description": "User token that given with login. (Authorization: Bearer xxxxx )"
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )",
+                "required":true
           },
           {
             "name": "followingId",
             "in": "body",
-            "description":"User id that will be followed by authenticated user."
+            "description":"User id that will be followed by authenticated user.",
+            "required":true
           }
         ],
         "responses": {
@@ -224,12 +230,14 @@
             {
                 "name": "Authorization",
                 "in": "header",
-                "description": "User token that given with login. (Authorization: Bearer xxxxx )"
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )",
+                "required":true
           },
           {
             "name": "followingId",
             "in": "body",
-            "description":"User id that will be unfollowed by authenticated user."
+            "description":"User id that will be unfollowed by authenticated user.",
+            "required":true
           }
         ],
         "responses": {
@@ -261,7 +269,8 @@
             {
                 "name": "Authorization",
                 "in": "header",
-                "description": "User token that given with login. (Authorization: Bearer xxxxx )"
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )",
+                "required":true
           }
         ],
         "responses": {
@@ -296,6 +305,7 @@
                 "name": "Post",
                 "in": "body",
                 "description": "User that will be created",
+                "required":true,
                 "schema": {
                     "type":"Object",
                     "properties":{
@@ -309,7 +319,8 @@
           {
             "name": "Authorization",
             "in": "header",
-            "description": "User token that given with login. (Authorization: Bearer xxxxx )"
+            "description": "User token that given with login. (Authorization: Bearer xxxxx )",
+            "required":true
           }
         ],
         "responses": {
@@ -349,12 +360,14 @@
             {
                 "name": "Authorization",
                 "in": "header",
-                "description": "User token that given with login. (Authorization: Bearer xxxxx )"
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )",
+                "required":true
             },
             {
               "name": "postId",
               "in": "path",
-              "description": "it's id of post which will be displayed"
+              "description": "it's id of post which will be displayed",
+              "required":true
             }
         ],
         "responses": {
@@ -394,12 +407,14 @@
             {
                 "name": "Authorization",
                 "in": "header",
-                "description": "User token that given with login. (Authorization: Bearer xxxxx )"
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )",
+                "required":true
             },
             {
               "name": "postId",
               "in": "path",
-              "description": "it's id of post which will switch status."
+              "description": "it's id of post which will switch status.",
+              "required":true
             }
         ],
         "responses": {
@@ -590,5 +605,21 @@
         }
       }
     }
-  }
+  },
+  "securityDefinitions":{  
+    "petstore_auth":{  
+       "type":"jwt",
+       "authorizationUrl":"http://petstore.swagger.io/oauth/authorize",
+       "flow":"implicit",
+       "scopes":{  
+          "write:pets":"modify pets in your account",
+          "read:pets":"read your pets"
+       }
+    },
+    "api_key":{  
+       "type":"apiKey",
+       "name":"api_key",
+       "in":"header"
+    }
+ }
 }
