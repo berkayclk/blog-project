@@ -58,7 +58,9 @@ authController.put("/register", (req,res,next)=>{
                     if( !token ) res.send();
 
                     var keyValue = AuthUtil.generateHeaderKeyValue(token);
-                    res.header(keyValue.key, keyValue.value).send();
+                    res.header(keyValue.key, keyValue.value)
+                        .status(HttpResponseCode.CREATED)
+                        .send();
                     
                 } )
                 .catch( err => {
