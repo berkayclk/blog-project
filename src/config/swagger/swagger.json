@@ -70,9 +70,11 @@
                     }
                 },
                 "400": {
-                    "description": "User could not be created."
+                    "description": "User could not be created.",
+                    "schema":{
+                      "$ref":"#/definitions/ApiErrorResponse"
+                    }   
                 }
-                
             }
         }
     },
@@ -108,7 +110,10 @@
                     }
                 },
                 "400": {
-                    "description": "User could not be logged in."
+                    "description": "User could not be logged in.",
+                    "schema":{
+                      "$ref":"#/definitions/ApiErrorResponse"
+                    }   
                 }
                 
             }
@@ -132,9 +137,11 @@
                     "description": "User was succesfully logged out."
                 },
                 "401": {
-                    "description": "User could not be logged out."
+                    "description": "User could not be logged out.",
+                    "schema":{
+                      "$ref":"#/definitions/ApiErrorResponse"
+                    }   
                 }
-                
             }
         }
     },
