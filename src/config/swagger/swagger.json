@@ -340,7 +340,7 @@
         }
     }
     },
-    "/post/{:postId}": {
+    "/post/{postId}": {
       "get":{
         "operationId":"getPost",
         "tags":["Posts"],
@@ -353,7 +353,7 @@
             },
             {
               "name": "postId",
-              "in": "query",
+              "in": "path",
               "description": "it's id of post which will be displayed"
             }
         ],
@@ -365,7 +365,7 @@
               }
             },
             "400": {
-                "description": "There is no postId in request query.",
+                "description": "There is no postId in request path.",
                 "schema":{
                   "$ref":"#/definitions/ApiErrorResponse"
                 }   
@@ -385,7 +385,7 @@
         }
       }
     },
-    "/post/switchStatus/{:postId}": {
+    "/post/switchStatus/{postId}": {
       "get":{
         "operationId":"switchStatus",
         "tags":["Posts"],
@@ -398,7 +398,7 @@
             },
             {
               "name": "postId",
-              "in": "query",
+              "in": "path",
               "description": "it's id of post which will switch status."
             }
         ],
@@ -407,7 +407,7 @@
                 "description": "Post's status was successfully switched."
             },
             "400": {
-              "description": "There is no postId in request query.",
+              "description": "There is no postId in request path.",
               "schema":{
                 "$ref":"#/definitions/ApiErrorResponse"
               }   
