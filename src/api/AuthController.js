@@ -45,7 +45,7 @@ authController.get("/logout", checkToken ,(req,res,next)=>{
 
 });
 
-authController.put("/register", (req,res,next)=>{
+authController.post("/register", (req,res,next)=>{
     
     if( !req.body.User ){
         LogUtil.LogError("User is not valid!");
