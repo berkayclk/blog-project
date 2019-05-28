@@ -6,6 +6,10 @@ var LogUtil = require("./utility/LogUtil");
 
 var ApplicationConstants = require("./constants/ApplicationConstants");
 
+//Swagger 
+var swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./config/swagger');
+
 //Controllers
 var UserController = require("./api/UserController");
 var AuthController = require("./api/AuthController");
@@ -19,6 +23,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.set(ApplicationConstants.PORT_KEY, ApplicationConstants.PORT);
+
+//Api Documantations
+app.use(`${ApplicationConstants.BASE_PATH}/doc`, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //Api Routes
 app.use(`${ApplicationConstants.BASE_PATH}/user`, UserController);

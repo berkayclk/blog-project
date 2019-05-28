@@ -34,7 +34,7 @@ authController.post("/login", (req,res,next)=>{
 
 authController.get("/logout", checkToken ,(req,res,next)=>{
     
-    AuthService.log(req.AuthUser, req.Token)
+    AuthService.logoutUser(req.AuthUser, req.Token)
                 .then( result => {
                     res.status(HttpResponseCode.OK).send() 
                 })
@@ -45,7 +45,7 @@ authController.get("/logout", checkToken ,(req,res,next)=>{
 
 });
 
-authController.put("/register", (req,res,next)=>{
+authController.post("/register", (req,res,next)=>{
     
     if( !req.body.User ){
         LogUtil.LogError("User is not valid!");
