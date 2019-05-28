@@ -44,13 +44,13 @@ postController.post("/createPost", checkToken, (req,res,next)=>{
 
 postController.get("/:postId", checkToken, (req,res,next)=>{
     
-    if( !req.params.id ){
+    if( !req.params.postId ){
         LogUtil.LogError( "postController - /:postId - postId is reqired in request parameter!" );
         res.status(HttpResponseCode.BAD_REQUEST).send( new ApiResponse("postId is reqired in request parameter!") );
         return;
     }
 
-    PostService.findByPostIdAndUser(req.params.id, req.AuthUser)
+    PostService.findByPostIdAndUser(req.params.postId, req.AuthUser)
                     .then( post => {
                         res.status(HttpResponseCode.OK).send(  new ApiResponse(null,post) );
                     })
