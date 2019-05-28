@@ -34,7 +34,7 @@ authController.post("/login", (req,res,next)=>{
 
 authController.get("/logout", checkToken ,(req,res,next)=>{
     
-    AuthService.log(req.AuthUser, req.Token)
+    AuthService.logoutUser(req.AuthUser, req.Token)
                 .then( result => {
                     res.status(HttpResponseCode.OK).send() 
                 })
