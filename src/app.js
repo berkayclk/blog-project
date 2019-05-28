@@ -18,12 +18,12 @@ app.use(logger(ApplicationConstants.MORGAN_LOG_PATTERN));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.set(ApplicationConstants.PORT_KEY, ApplicationConstants.DEFAULT_PORT);
+app.set(ApplicationConstants.PORT_KEY, ApplicationConstants.PORT);
 
 //Api Routes
-app.use("/api/user", UserController);
-app.use("/api/auth", AuthController);
-app.use("/api/post", PostController);
+app.use(`${ApplicationConstants.BASE_PATH}/user`, UserController);
+app.use(`${ApplicationConstants.BASE_PATH}/auth`, AuthController);
+app.use(`${ApplicationConstants.BASE_PATH}/post`, PostController);
 
 //start listening port
 app.listen(app.get(ApplicationConstants.PORT_KEY),() => {

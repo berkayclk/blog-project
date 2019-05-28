@@ -1,8 +1,11 @@
 let ApplicationConstants = {
     PORT_KEY: "PORT",
-    DEFAULT_PORT: process.env.PORT || '8080',
+    PORT: process.env.PORT || '8080',
+    DEFAULT_PORT: "80",
     MORGAN_LOG_PATTERN: 'dev',
-    LOCALE: process.env.LOCALE || 'tr-TR'
+    LOCALE: process.env.LOCALE || 'tr-TR',
+    HOST: process.env.HOST || "localhost",
+    BASE_PATH: process.env.BASE_PATH || "/api"
 };
 
 module.exports = Object.freeze(ApplicationConstants);
