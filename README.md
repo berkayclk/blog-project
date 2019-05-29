@@ -1,5 +1,6 @@
 # Blog Project 
 ### Please click [here][requirementUrl] to see project requirements
+#### This application is running on Heroku. [Click here][herokuDoc] to acccess api documentation.
 
 [requirementUrl]: https://github.com/berkayclk/blog-project/blob/release/prod/ProjectRequirements.md
 [herokuDoc]: https://blog-app-dev.herokuapp.com/api/doc/
