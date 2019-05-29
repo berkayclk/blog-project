@@ -5,7 +5,8 @@ let ApplicationConstants = {
     MORGAN_LOG_PATTERN: 'dev',
     LOCALE: process.env.LOCALE || 'tr-TR',
     HOST: process.env.HOST || "localhost",
-    BASE_PATH: process.env.BASE_PATH || "/api"
+    BASE_PATH: process.env.BASE_PATH || "/api",
+    HEROKU_FLAG : process.env.HEROKU_FLAG || false
 };
 
 module.exports = Object.freeze(ApplicationConstants);
