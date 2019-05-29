@@ -1,7 +1,7 @@
 # Blog Project 
 ### Please click [here][requirementUrl] to see project requirements
 
-[requirementUrl]: https://github.com/berkayclk/blog-project/blob/master/ProjectRequirements.md
+[requirementUrl]: https://github.com/berkayclk/blog-project/blob/release/prod/ProjectRequirements.md
 
 ### Installation
  - Open any folder in your pc.
@@ -31,6 +31,5 @@ JWT_SECRET=secret
 
 
 #### TODO
-  - Swagger Documentation  
   - Use passportJs to authorization  
   - Create unit tests
