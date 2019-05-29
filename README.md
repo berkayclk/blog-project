@@ -2,6 +2,7 @@
 ### Please click [here][requirementUrl] to see project requirements
 
 [requirementUrl]: https://github.com/berkayclk/blog-project/blob/release/prod/ProjectRequirements.md
+[herokuDoc]: https://blog-app-dev.herokuapp.com/api/doc/
 
 ### Installation
  - Open any folder in your pc.
