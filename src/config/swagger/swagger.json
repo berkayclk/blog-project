@@ -196,7 +196,7 @@
             "200": {
                 "description": "Users were successfully fetched.",
                 "schema":{
-                  "$ref":"#/definitions/ApiUsersResponse"
+                  "$ref":"#/definitions/ApiSuggestedUsersResponse"
                 }   
             },
             "404": {
@@ -621,6 +621,20 @@
             }
         }                   
     },
+    "UserToSuggest": {
+       "properties": {
+          "_id": {
+              "type": "string",
+              "uniqueItems": true
+          },
+          "Username": {
+              "type": "string"
+          },
+          "Fullname":{
+              "type": "string"
+            }
+        }
+    },
     "ApiErrorResponse": {
         "properties":{
           "error":{
@@ -643,6 +657,16 @@
             "items":{
               "$ref":"#/definitions/User"
             }
+        }
+      }
+    },
+    "ApiSuggestedUsersResponse": {
+      "properties": {
+        "result":{
+          "type":"array",
+          "items":{
+            "$ref":"#/definitions/UserToSuggest"
+          }
         }
       }
     },
