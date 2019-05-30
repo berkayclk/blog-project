@@ -194,13 +194,20 @@
                 "in": "header",
                 "description": "User token that given with login. (Authorization: Bearer xxxxx )",
                 "required":true
-          },
-          {
-            "name": "followingId",
-            "in": "body",
-            "description":"User id that will be followed by authenticated user.",
-            "required":true
-          }
+            },
+            {
+              "name": "followingId",
+              "in": "body",
+              "description":"User id that will be followed by authenticated user.",
+              "required":true,
+              "schema":{
+                  "properties":{
+                    "followingId":{
+                      "type":"string"
+                    }
+                  }
+              }
+            }
         ],
         "responses": {
             "200": {
@@ -237,7 +244,14 @@
             "name": "followingId",
             "in": "body",
             "description":"User id that will be unfollowed by authenticated user.",
-            "required":true
+            "required":true,
+            "schema":{
+                "properties":{
+                  "followingId":{
+                    "type":"string"
+                  }
+                }
+            }
           }
         ],
         "responses": {
