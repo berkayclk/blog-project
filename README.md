@@ -5,7 +5,7 @@
 [requirementUrl]: https://github.com/berkayclk/blog-project/blob/release/prod/ProjectRequirements.md
 [herokuDoc]: https://blog-app-dev.herokuapp.com/api/doc/
 
-### Installation
+## Installation
  - Open any folder in your pc.
  - ``` git clone https://github.com/berkayclk/blog-project ``` - to clone project to your locale.   
  - ```cd blog-project``` - to enter folder.    
@@ -31,7 +31,16 @@ JWT_SECRET=secret
 
 ```
 
+## DOCKER USAGE
 
-#### TODO
-  - Create docker image
+#### Prerequisites 
+ - Installed *Docker* in your pc.
+ - *docker.env* file which includes MONGODB_URI={mongo cloud url] in your project folder.
+#### Run Instructions
+  - Open project folder in your terminal.
+  - Run ``` docker build . -t blog-app ``` -to build docker image  
+  - Run ``` docker run -p 8080:8080 -t blog-app ```  -to run container on 8080
+  - Now, Blog app is running on 8080 port of your localhost.
+
+### TODO
   - Create unit tests
