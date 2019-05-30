@@ -187,6 +187,22 @@ class UserService{
        });
    }
    
+   suggestUser(User){
+        return new Promise( (resolve,reject)=>{
+            var Followings = User.Following.map( followingUser => followingUser.id);
+            Users.find({
+                $and:[
+                    { _id: { $ne: User._id } },
+                    { _id: { $nin: Followings } }
+                ]
+            },(err, users)=>{
+               if( err )
+                    reject(err);
+                users = users.map( user => UserUtil.pickPublicVisibleFields(user) );
+                resolve(users);
+            });
+        });
+   }
    
 }
 

@@ -179,6 +179,47 @@
         }
       }
     },
+    "/user/suggestUser": {
+      "get":{
+        "operationId":"getSuggestedUsers",
+        "tags":["Users"],
+        "summary":"Returns user who is followable by authenticated user.",
+        "parameters":[
+            {
+                "name": "Authorization",
+                "in": "header",
+                "required":true,
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )"
+          }
+        ],
+        "responses": {
+            "200": {
+                "description": "Users were successfully fetched.",
+                "schema":{
+                  "$ref":"#/definitions/ApiUsersResponse"
+                }   
+            },
+            "404": {
+                "description": "There is no user to suggest.",
+                "schema":{
+                  "$ref":"#/definitions/ApiErrorResponse"
+                }   
+            },
+            "400": {
+              "description": "User suggestion was failed!",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+            },
+            "401": {
+              "description": "User token that sending in header, is not valid!",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+            }
+        }
+      }
+    },
     "/user/follow":{
       "post":{
         "operationId":"followUser",

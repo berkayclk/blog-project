@@ -65,4 +65,18 @@ userController.post("/unfollow", (req,res,next)=>{
                         });
 });
 
+userController.get("/suggestUser", (req,res,next)=>{
+   UserService.suggestUser(req.user)
+                    .then( users =>{
+                        if( !users )
+                            res.status(HttpResponseCode.DATA_NOT_FOUND).send( new ApiResponse("There is no user to suggest.") );
+
+                        res.send(users);
+                    })
+                    .catch( err => {
+                        LogUtil.LogError( "userController - /suggestUser - " + err );
+                        res.status(HttpResponseCode.BAD_REQUEST).send( new ApiResponse("User suggestion was failed!") );
+                    })
+});
+
 module.exports = userController;
