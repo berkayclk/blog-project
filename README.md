@@ -33,4 +33,5 @@ JWT_SECRET=secret
 
 
 #### TODO
+  - Create docker image
   - Create unit tests
