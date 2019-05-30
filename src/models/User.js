@@ -1,7 +1,6 @@
 const mongodb = require('../database/mongodb');
 var validator = require("validator");
 
-const AuthUtil = require('../utility/AuthUtil');
 const ApplicationConstants = require('../constants/ApplicationConstants');
 const CryptoUtil = require("../utility/CryptoUtil");
 const UserUtil = require('../utility/UserUtil');
@@ -35,10 +34,6 @@ var userSchema = mongodb.Schema({
     }],
     Following:[{
         id: mongodb.Schema.Types.ObjectId
-    }],
-    AuthTokens:[{
-        expireDate:{type:Date,required:true, default: AuthUtil.getExpireDate},
-        token:{type:String,required:true}
     }]
 });
 
