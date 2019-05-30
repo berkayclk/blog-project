@@ -101,7 +101,7 @@
                 }
             ],
             "responses": {
-                "201": {
+                "200": {
                     "description": "User is logged in.",
                     "headers":{  
                         "Authorization":{
@@ -255,7 +255,7 @@
           }
         ],
         "responses": {
-            "200": {
+            "201": {
                 "description": "User was successfully unfollowed."
             },
             "400": {
