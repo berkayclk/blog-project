@@ -1,0 +1,692 @@
+{
+  "swagger": "2.0",
+  "info": {
+      "version": "1.0.0",
+      "title": "Blog Post API",
+      "description": "This is Post Share application. You can register, login and share post in system. You can display to posts of users you followed.",
+      "contact":{  
+         "email":"berkayc78@gmail.com"
+      }
+  },
+  "host": "localhost:8080",
+  "basePath": "/api",
+  "tags": [
+      {
+          "name": "Authentication",
+          "description": "API to manage login and registration operations."
+      },
+      {
+          "name": "Users",
+          "description": "API to manage relations between Users."
+      },
+      {
+          "name": "Posts",
+          "description": "API to share and display Posts."
+      }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/auth/register": {
+        "post": {
+            "operationId":"registerUser",
+            "tags": ["Authentication"],
+            "summary":"Create new user in system",
+            "parameters":[
+                {
+                    "name": "Register User",
+                    "in": "body",
+                    "description": "User that will be created",
+                    "schema": {
+                        "type":"Object",
+                        "properties":{
+                            "User":{
+                                "$ref": "#/definitions/UserToRegister"
+                            }
+                        }
+                        
+                    },
+                    "required":true
+            }],
+            "responses": {
+                "200": {
+                    "description": "User was succesfully created but token could not be generated."
+                },
+                "201": {
+                    "description": "User was succesfully created.",
+                    "headers":{  
+                        "Authorization":{
+                            "type":"string",
+                            "format":"Bearer",
+                            "description":"token of authenticated user with format like 'Bearer xxxxx'"
+                        }
+                    }
+                },
+                "400": {
+                    "description": "User could not be created.",
+                    "schema":{
+                      "$ref":"#/definitions/ApiErrorResponse"
+                    }   
+                }
+            }
+        }
+    },
+    "/auth/login": {
+        "post": {
+            "operationId":"loginUser",
+            "tags": ["Authentication"],
+            "summary":"Login system and get token in header",
+            "parameters":[
+                {
+                    "name": "Credentials",
+                    "in": "body",
+                    "description": "Credentials that will be login to system.",
+                    "schema": {
+                        "type":"Object",
+                        "$ref": "#/definitions/Credentials"
+                    },
+                    "required":true
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "User is logged in.",
+                    "headers":{  
+                        "Authorization":{
+                            "type":"string",
+                            "format":"Bearer",
+                            "description":"token of authenticated user with format like 'Bearer xxxxx'"
+                        }
+                    }
+                },
+                "400": {
+                    "description": "User could not be logged in.",
+                    "schema":{
+                      "$ref":"#/definitions/ApiErrorResponse"
+                    }   
+                }
+                
+            }
+        }
+    },
+    "/auth/logout": {
+        "get": {
+            "operationId":"logoutUser",
+            "tags": ["Authentication"],
+            "summary":"Logout authenticated user who has token in heeader",
+            "produces":[],
+            "parameters":[
+              {
+                "name": "Authorization",
+                "in": "header",
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )",
+                "required":true
+              }
+            ],
+            "responses": {
+                "200": {
+                    "description": "User was succesfully logged out."
+                },
+                "401": {
+                  "description": "Could not log out. Maybe, User token that sending in header, is not valid!",
+                  "schema":{
+                    "$ref":"#/definitions/ApiErrorResponse"
+                  }   
+                }
+            }
+        }
+    },
+    "/user": {
+      "get":{
+        "operationId":"getAuthenticatedUser",
+        "tags":["Users"],
+        "summary":"Returns authenticated user who has token in header.",
+        "parameters":[
+            {
+                "name": "Authorization",
+                "in": "header",
+                "required":true,
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )"
+          }
+        ],
+        "responses": {
+            "200": {
+                "description": "User was successfully fetched.",
+                "schema":{
+                  "$ref":"#/definitions/ApiUserResponse"
+                }   
+            },
+            "404": {
+                "description": "User could not be found.",
+                "schema":{
+                  "$ref":"#/definitions/ApiErrorResponse"
+                }   
+            },
+            "401": {
+              "description": "User token that sending in header, is not valid!",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+            }
+        }
+      }
+    },
+    "/user/suggestUser": {
+      "get":{
+        "operationId":"getSuggestedUsers",
+        "tags":["Users"],
+        "summary":"Returns user who is followable by authenticated user.",
+        "parameters":[
+            {
+                "name": "Authorization",
+                "in": "header",
+                "required":true,
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )"
+          }
+        ],
+        "responses": {
+            "200": {
+                "description": "Users were successfully fetched.",
+                "schema":{
+                  "$ref":"#/definitions/ApiSuggestedUsersResponse"
+                }   
+            },
+            "404": {
+                "description": "There is no user to suggest.",
+                "schema":{
+                  "$ref":"#/definitions/ApiErrorResponse"
+                }   
+            },
+            "400": {
+              "description": "User suggestion was failed!",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+            },
+            "401": {
+              "description": "User token that sending in header, is not valid!",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+            }
+        }
+      }
+    },
+    "/user/follow":{
+      "post":{
+        "operationId":"followUser",
+        "tags":["Users"],
+        "summary":"Follow to user with authenticated user.",
+        "parameters":[
+            {
+                "name": "Authorization",
+                "in": "header",
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )",
+                "required":true
+            },
+            {
+              "name": "followingId",
+              "in": "body",
+              "description":"User id that will be followed by authenticated user.",
+              "required":true,
+              "schema":{
+                  "properties":{
+                    "followingId":{
+                      "type":"string"
+                    }
+                  }
+              }
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "User was successfully followed."
+            },
+            "400": {
+                "description": "User could not be followed.",
+                "schema":{
+                  "$ref":"#/definitions/ApiErrorResponse"
+                }   
+            },
+            "401": {
+              "description": "User token that sending in header, is not valid!",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+           }
+        }
+      }
+    },
+    "/user/unfollow": {
+      "post":{
+        "operationId":"unfollowUser",
+        "tags":["Users"],
+        "summary":"Unfollow to user with authenticated user.",
+        "parameters":[
+            {
+                "name": "Authorization",
+                "in": "header",
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )",
+                "required":true
+          },
+          {
+            "name": "followingId",
+            "in": "body",
+            "description":"User id that will be unfollowed by authenticated user.",
+            "required":true,
+            "schema":{
+                "properties":{
+                  "followingId":{
+                    "type":"string"
+                  }
+                }
+            }
+          }
+        ],
+        "responses": {
+            "201": {
+                "description": "User was successfully unfollowed."
+            },
+            "400": {
+                "description": "User could not be unfollowed.",
+                "schema":{
+                  "$ref":"#/definitions/ApiErrorResponse"
+                }   
+            },
+            "401": {
+              "description": "User token that sending in header, is not valid!",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+           }
+            
+        }
+      }
+    },
+    "/post": {
+      "get":{
+        "operationId":"getPosts",
+        "tags":["Posts"],
+        "summary":"Returns posts that authenticated user can display.",
+        "parameters":[
+            {
+                "name": "Authorization",
+                "in": "header",
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )",
+                "required":true
+          }
+        ],
+        "responses": {
+            "200": {
+                "description": "Posts were successfully fetched.",
+                "schema":{
+                  "$ref":"#/definitions/ApiPostsResponse"
+                }   
+            },
+            "401": {
+              "description": "User token that sending in header, is not valid!",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+             },
+            "404": {
+                "description": "Post could not be fetched.",
+                "schema":{
+                  "$ref":"#/definitions/ApiErrorResponse"
+                }   
+            }
+        }
+      }
+    },
+    "/post/createPost": {
+      "post": {
+        "operationId":"createPost",
+        "tags": ["Posts"],
+        "summary":"Create new post for authenticated user.",
+        "parameters":[
+            {
+                "name": "Post",
+                "in": "body",
+                "description": "User that will be created",
+                "required":true,
+                "schema": {
+                    "type":"Object",
+                    "properties":{
+                        "Post":{
+                            "$ref": "#/definitions/PostToCreate"
+                        }
+                    }
+                    
+                }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "User token that given with login. (Authorization: Bearer xxxxx )",
+            "required":true
+          }
+        ],
+        "responses": {
+            "200": {
+                "description": "Post was succesfully created",
+                "schema":{
+                  "$ref":"#/definitions/ApiPostResponse"
+                }
+            },
+            "400": {
+                "description": "There is no Post object in request body.",
+                "schema":{
+                  "$ref":"#/definitions/ApiErrorResponse"
+                }   
+            },
+            "401": {
+              "description": "User token that sending in header, is not valid!",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+             },
+            "404": {
+                "description": "Post could not be created.",
+                "schema":{
+                  "$ref":"#/definitions/ApiErrorResponse"
+                }   
+            }
+        }
+    }
+    },
+    "/post/{postId}": {
+      "get":{
+        "operationId":"getPost",
+        "tags":["Posts"],
+        "summary":"Returns a post with postId that authenticated user can display.",
+        "parameters":[
+            {
+                "name": "Authorization",
+                "in": "header",
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )",
+                "required":true
+            },
+            {
+              "name": "postId",
+              "in": "path",
+              "description": "it's id of post which will be displayed",
+              "required":true
+            }
+        ],
+        "responses": {
+            "200": {
+              "description": "Post was succesfully fetched",
+              "schema":{
+                "$ref":"#/definitions/ApiPostResponse"
+              }
+            },
+            "400": {
+                "description": "There is no postId in request path.",
+                "schema":{
+                  "$ref":"#/definitions/ApiErrorResponse"
+                }   
+            },
+            "401": {
+              "description": "User token that sending in header, is not valid!",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+             },
+            "404": {
+                "description": "Post could not be found.",
+                "schema":{
+                  "$ref":"#/definitions/ApiErrorResponse"
+                }   
+            }
+        }
+      }
+    },
+    "/post/switchStatus/{postId}": {
+      "get":{
+        "operationId":"switchStatus",
+        "tags":["Posts"],
+        "summary":"Switch status of post between public and private",
+        "parameters":[
+            {
+                "name": "Authorization",
+                "in": "header",
+                "description": "User token that given with login. (Authorization: Bearer xxxxx )",
+                "required":true
+            },
+            {
+              "name": "postId",
+              "in": "path",
+              "description": "it's id of post which will switch status.",
+              "required":true
+            }
+        ],
+        "responses": {
+            "201": {
+                "description": "Post's status was successfully switched."
+            },
+            "400": {
+              "description": "There is no postId in request path.",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+            },
+            "401": {
+              "description": "User token that sending in header, is not valid!",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+           },
+            "403": {
+              "description": "Authenticated user is not owner of this post.",
+              "schema":{
+                "$ref":"#/definitions/ApiErrorResponse"
+              }   
+           },
+            "404": {
+                "description": "Post could not be found or status could not be switched.",
+                "schema":{
+                  "$ref":"#/definitions/ApiErrorResponse"
+                }   
+            }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+        "required": [
+            "Username",
+            "Password",
+            "Fullname"
+        ],
+        "properties": {
+            "_id": {
+                "type": "string",
+                "uniqueItems": true
+            },
+            "Username": {
+                "type": "string"
+            },
+            "Fullname":{
+                "type": "string"
+            },
+            "Contact": {
+                "required": [
+                    "Email"
+                ],
+                "properties": {
+                    "Email": {
+                        "type": "string"
+                    },
+                    "Phone": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CreateDate":"date",
+            "Following":{
+                "type":"array",
+                "items":{
+                  "type":"string"
+                }
+            },
+            "Follower":{
+                "type":"array",
+                "items":{
+                  "type":"string"
+                }
+            }
+        }
+    },
+    "Post": {
+      "required":[
+        "Header",
+        "Body",
+        "Author",
+        "Status"
+      ],
+      "properties":{
+        "_id":{"type":"string"},
+        "Header":{"type":"string"},
+        "Body":{"type":"string"},
+        "Author":{"type":"string"},
+        "Location":{"type":"string"},
+        "Status":{"type": "string", "enum":["public","private"]},
+        "CreateDate":{"type":"date"}
+      }
+    },
+    "UserToRegister": {
+        "required": [
+            "Username",
+            "Password",
+            "Fullname"
+        ],
+        "properties": {
+            "Username": {
+                "type": "string"
+            },
+            "Password": {
+                "type": "string"
+            },
+            "Fullname":{
+                "type": "string"
+            },
+            "Contact": {
+                "required": [
+                    "Email"
+                ],
+                "properties": {
+                    "Email": {
+                        "type": "string"
+                    },
+                    "Phone": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "PostToCreate": {
+      "required":[
+        "Header",
+        "Body",
+        "Status"
+      ],
+      "properties":{
+        "Header":{"type":"string"},
+        "Body":{"type":"string"},
+        "Location":{"type":"string"},
+        "Status":{"type": "string", "enum":["public","private"]}
+      }
+    },
+    "Credentials":{
+        "required":[
+            "Username",
+            "Password"
+        ],
+        "properties":{
+            "Username": {
+                "type": "string"
+            },
+            "Password": {
+                "type":"string"
+            }
+        }                   
+    },
+    "UserToSuggest": {
+       "properties": {
+          "_id": {
+              "type": "string",
+              "uniqueItems": true
+          },
+          "Username": {
+              "type": "string"
+          },
+          "Fullname":{
+              "type": "string"
+            }
+        }
+    },
+    "ApiErrorResponse": {
+        "properties":{
+          "error":{
+            "type":"string"
+          }
+        }
+    },
+    "ApiUserResponse": {
+        "properties":{
+          "result":{
+            "type":"object",
+            "$ref":"#/definitions/User"
+        }
+      }
+    },
+    "ApiUsersResponse": {
+        "properties":{
+          "result":{
+            "type":"array",
+            "items":{
+              "$ref":"#/definitions/User"
+            }
+        }
+      }
+    },
+    "ApiSuggestedUsersResponse": {
+      "properties": {
+        "result":{
+          "type":"array",
+          "items":{
+            "$ref":"#/definitions/UserToSuggest"
+          }
+        }
+      }
+    },
+    "ApiPostResponse": {
+      "properties":{
+        "result":{
+          "type":"object",
+          "$ref":"#/definitions/Post"
+        }
+      }
+    },
+    "ApiPostsResponse": {
+      "properties":{
+        "result":{
+          "type":"array",
+          "items":{
+            "$ref":"#/definitions/Post"
+          }
+        }
+      }
+    }
+  }
+}
