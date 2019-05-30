@@ -6,11 +6,10 @@ var PostConstants = require("../constants/PostConstants");
 var LogUtil = require("../utility/LogUtil");
 var HttpResponseCode = require("../constants/HttpResponseCodes");
 var ApiResponse = require("../models/ApiResponse");
-var checkToken = require("../handlers/AuthenticateHandler");
 
-postController.get("/", checkToken, (req,res,next)=>{
+postController.get("/",  (req,res,next)=>{
 
-    PostService.findByUser(req.AuthUser)
+    PostService.findByUser(req.user)
                     .then( posts => {
                         res.status(HttpResponseCode.OK).send(  new ApiResponse(null,posts) );
                     })
@@ -21,7 +20,7 @@ postController.get("/", checkToken, (req,res,next)=>{
 
 });
 
-postController.post("/createPost", checkToken, (req,res,next)=>{
+postController.post("/createPost", (req,res,next)=>{
     
     if( !req.body.Post ){
         LogUtil.LogError( "postController - /createPost - Post is reqired in request body!" );
@@ -29,7 +28,7 @@ postController.post("/createPost", checkToken, (req,res,next)=>{
         return;
     }
 
-    req.body.Post.Author = req.AuthUser._id;
+    req.body.Post.Author = req.user._id;
 
     PostService.createPost(req.body.Post)
                     .then( post => {
@@ -42,7 +41,7 @@ postController.post("/createPost", checkToken, (req,res,next)=>{
 
 });
 
-postController.get("/:postId", checkToken, (req,res,next)=>{
+postController.get("/:postId", (req,res,next)=>{
     
     if( !req.params.postId ){
         LogUtil.LogError( "postController - /:postId - postId is reqired in request parameter!" );
@@ -50,7 +49,7 @@ postController.get("/:postId", checkToken, (req,res,next)=>{
         return;
     }
 
-    PostService.findByPostIdAndUser(req.params.postId, req.AuthUser)
+    PostService.findByPostIdAndUser(req.params.postId, req.user)
                     .then( post => {
                         res.status(HttpResponseCode.OK).send(  new ApiResponse(null,post) );
                     })
@@ -61,7 +60,7 @@ postController.get("/:postId", checkToken, (req,res,next)=>{
 
 });
 
-postController.get("/switchStatus/:postId", checkToken, (req,res,next)=>{
+postController.get("/switchStatus/:postId", (req,res,next)=>{
     
     if( !req.params.postId ){
         LogUtil.LogError( "postController - /switchStatus/:postId - postId is reqired in request parameter!" );
@@ -72,7 +71,7 @@ postController.get("/switchStatus/:postId", checkToken, (req,res,next)=>{
     PostService.findById(req.params.postId) // find post 
                     .then( post => {
 
-                        if( post.Author.toString() !== req.AuthUser.id )  // check author of post
+                        if( post.Author.toString() !== req.user.id )  // check author of post
                         {
                             LogUtil.LogError( "postController - /switchStatus/postId  postId:"+ req.params.postId + " User is not owner of this post! " );
                             res.status(HttpResponseCode.UNAUTHORIZED).send( new ApiResponse("You are not owner of this post!") );

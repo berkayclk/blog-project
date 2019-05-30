@@ -5,11 +5,10 @@ var UserService = require("../services/UserService");
 var LogUtil = require("../utility/LogUtil");
 var HttpResponseCode = require("../constants/HttpResponseCodes");
 var ApiResponse = require("../models/ApiResponse");
-var checkToken = require("../handlers/AuthenticateHandler");
 
-userController.get("/", checkToken, (req,res,next)=>{
+userController.get("/", (req,res,next)=>{
 
-    UserService.findById(req.AuthUser._id)
+    UserService.findById(req.user._id)
                     .then( user => {
                         res.status(HttpResponseCode.OK).send(  new ApiResponse(null,user) );
                     })
@@ -20,7 +19,7 @@ userController.get("/", checkToken, (req,res,next)=>{
 
 });
 
-userController.post("/follow", checkToken, (req,res,next)=>{
+userController.post("/follow",  (req,res,next)=>{
     
     if( !req.body.followingId ){
         LogUtil.LogError( "userController - \\follow - followingId is reqired!" );
@@ -28,7 +27,7 @@ userController.post("/follow", checkToken, (req,res,next)=>{
         return;
     }
 
-    var followerId = req.AuthUser._id;
+    var followerId = req.user._id;
     var followingId = req.body.followingId;
     
     UserService.followUser(followerId,followingId)
@@ -42,7 +41,7 @@ userController.post("/follow", checkToken, (req,res,next)=>{
                         });
 });
 
-userController.post("/unfollow",checkToken, (req,res,next)=>{
+userController.post("/unfollow", (req,res,next)=>{
    
     if( !req.body.followingId ){
         LogUtil.LogError( "userController - \\unfollow - followingId is reqired!" );
@@ -50,7 +49,7 @@ userController.post("/unfollow",checkToken, (req,res,next)=>{
         return;
     }
 
-    var followerId = req.AuthUser._id;
+    var followerId = req.user._id;
     var followingId = req.body.followingId;
     
     UserService.unfollowUser(followerId,followingId)
