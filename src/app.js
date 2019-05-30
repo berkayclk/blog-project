@@ -2,8 +2,11 @@ require("dotenv/config");//load config in .env file
 var express = require('express');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
-var LogUtil = require("./utility/LogUtil");
 
+var passport = require("passport");
+var passportConf = require("./config/passport");
+
+var LogUtil = require("./utility/LogUtil");
 var ApplicationConstants = require("./constants/ApplicationConstants");
 
 //Swagger 
