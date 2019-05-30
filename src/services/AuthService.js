@@ -9,9 +9,7 @@ class AuthService{
             UserService.createUser(User)
                         .then( userResult => {
                             var tokenModel = AuthUtil.generateToken(userResult);
-                            UserService.saveAuthToken(userResult,tokenModel)
-                                            .then( res => resolve(tokenModel.token))
-                                            .catch(err => resolve());
+                            resolve(tokenModel.token);
                         })
                         .catch( err => reject(err));
         });

@@ -8,6 +8,5 @@ module.exports.pickNonSensitiveObject = body => {
 }
 
 module.exports.SENSITIVE_USER_FIELDS = Object.freeze( [
-    "Password",
-    "AuthTokens"
+    "Password"
 ]);
