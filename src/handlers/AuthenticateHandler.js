@@ -28,8 +28,8 @@ function checkToken(req,res,next){
             res.status(HttpResponseCodes.UNAUTHORIZED).send( new ApiResponse("Token is Expired!") );
             return;
         }
-    
-        UserService.findByToken(tokenModel._id, token)
+        
+        UserService.findById(tokenModel._id,)
                                 .then(AuthUser => {
                                     
                                     if( !AuthUser ){

@@ -1,3 +1,4 @@
+var passport = require("passport");
 var express = require('express');
 var authController = express.Router();
 
@@ -9,27 +10,11 @@ const HttpResponseCode = require("../constants/HttpResponseCodes");
 var AuthUtil = require("../utility/AuthUtil");
 var LogUtil = require("../utility/LogUtil");
 
-authController.post("/login", (req,res,next)=>{
-
-    if( !req.body.Credentials ){
-        LogUtil.LogError("User Credentials is required!");
-        res.status(HttpResponseCode.BAD_REQUEST).send(new ApiResponse("User Credentials is required!"));
-    }
-        
-    AuthService.loginUser(req.body.Credentials)
-                .then( token => {
-
-                    var keyValue = AuthUtil.generateHeaderKeyValue(token);
-                    res.header(keyValue.key, keyValue.value).send();
-
-                })
-                .catch( err => {
-
-                    LogUtil.LogError(err);
-                    res.status(HttpResponseCode.UNAUTHORIZED).send();
-                    
-                });
-
+authController.post("/login",passport.authenticate('local',{session:false}) ,(req,res,next)=>{
+    
+    const tokenModel = AuthUtil.generateToken(req.user);
+    var keyValue = AuthUtil.generateHeaderKeyValue(tokenModel.token);
+    res.header(keyValue.key, keyValue.value).send();
 });
 
 authController.get("/logout", checkToken ,(req,res,next)=>{

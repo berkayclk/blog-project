@@ -86,16 +86,12 @@
             "summary":"Login system and get token in header",
             "parameters":[
                 {
-                    "name": "Login User",
+                    "name": "Credentials",
                     "in": "body",
                     "description": "Credentials that will be login to system.",
                     "schema": {
                         "type":"Object",
-                        "properties":{
-                            "Credentials":{
-                                "$ref": "#/definitions/Credentials"
-                            }
-                        }
+                        "$ref": "#/definitions/Credentials"
                     },
                     "required":true
                 }
