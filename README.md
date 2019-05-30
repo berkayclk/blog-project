@@ -33,5 +33,4 @@ JWT_SECRET=secret
 
 
 #### TODO
-  - Use passportJs to authorization  
   - Create unit tests
