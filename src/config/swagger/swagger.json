@@ -599,6 +599,14 @@
         }
       }
     },
+    "ApiUsersResponse": {
+        "properties":{
+          "result":{
+            "type":"array",
+            "$ref":"#/definitions/User"
+        }
+      }
+    },
     "ApiPostResponse": {
       "properties":{
         "result":{
