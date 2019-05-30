@@ -3,19 +3,6 @@ var AuthUtil = require("../utility/AuthUtil");
 
 class AuthService{
     
-
-    logoutUser(User,AuthToken){
-        return new Promise( (resolve,reject)=>{
-            
-            if( !User || !AuthToken )
-                reject("Missing argument");
-            
-            UserService.removeAuthToken(User, AuthToken)
-                                .then(res =>  resolve("Logout succesfully"))
-                                .catch( err => reject(err));
-        });
-    }
-
     registerUser(User){
         return new Promise( (resolve,reject)=>{
             

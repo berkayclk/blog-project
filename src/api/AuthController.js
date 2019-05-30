@@ -2,7 +2,6 @@ var passport = require("passport");
 var express = require('express');
 var authController = express.Router();
 
-var checkToken = require("../handlers/AuthenticateHandler");
 var AuthService = require("../services/AuthService");
 
 var ApiResponse = require("../models/ApiResponse");
@@ -17,17 +16,9 @@ authController.post("/login",passport.authenticate('local',{session:false}) ,(re
     res.header(keyValue.key, keyValue.value).send();
 });
 
-authController.get("/logout", checkToken ,(req,res,next)=>{
-    
-    AuthService.logoutUser(req.AuthUser, req.Token)
-                .then( result => {
-                    res.status(HttpResponseCode.OK).send() 
-                })
-                .catch( err => {
-                    LogUtil.LogError(err);
-                    res.status(HttpResponseCode.UNAUTHORIZED).send();
-                });
-
+authController.get("/logout", passport.authenticate('jwt',{session:false}) ,(req,res,next)=>{
+    //TODO: create blacklist
+    res.status(HttpResponseCode.BAD_REQUEST).send();
 });
 
 authController.post("/register", (req,res,next)=>{
