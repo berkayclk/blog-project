@@ -44,53 +44,10 @@ class UserService{
         });
      }
 
-     findByToken(userId, token){
-        return new Promise((resolve,reject) =>{
-             
-             Users.findOne({ 
-                 _id : userId,
-                 "AuthTokens.token":token
-              }, (err,userResult) =>{
-                if( err )
-                    reject("Token is not found!");
-
-                resolve(userResult);
-             });
-        });
-     }
-
     createUser(user){
         var user = UserUtil.pickNonSensitiveObject(user);
         var userModel = new Users(user);
         return userModel.save();
-     }
-
-     saveAuthToken(user, AuthToken){
-        return new Promise( (resolve, reject) => {
-            Users.updateOne(
-                {  _id: user._id},
-                { $push : { AuthTokens: { token: AuthToken.token, expireDate: AuthToken.expireDate } } },
-                { new:true, runValidators:true },
-                (err, res) =>{
-                    if(err) reject(err);
-                    resolve(res);        
-                }
-            );
-        });
-     }
-
-     removeAuthToken(user, AuthToken){
-        return new Promise( (resolve, reject )=>{
-            Users.updateOne(
-                { _id : user._id  },
-                { $pull : { AuthTokens :{  token: AuthToken.token  } } },
-                { new:true, runValidators:true },
-                (err, res) =>{
-                    if(err) reject(err);
-                    resolve(res);        
-                }
-            );
-        });
      }
 
      updateUser(user){
@@ -230,6 +187,22 @@ class UserService{
        });
    }
    
+   suggestUser(User){
+        return new Promise( (resolve,reject)=>{
+            var Followings = User.Following.map( followingUser => followingUser.id);
+            Users.find({
+                $and:[
+                    { _id: { $ne: User._id } },
+                    { _id: { $nin: Followings } }
+                ]
+            },(err, users)=>{
+               if( err )
+                    reject(err);
+                users = users.map( user => UserUtil.pickPublicVisibleFields(user) );
+                resolve(users);
+            });
+        });
+   }
    
 }
 

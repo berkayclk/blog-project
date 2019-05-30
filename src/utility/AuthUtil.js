@@ -2,17 +2,15 @@ var AuthConstants = require("../constants/AuthConstants");
 const DateUtil = require('../utility/DateUtil');
 const jwt = require('jsonwebtoken');
 
-module.exports.getExpireDate = () => {
-    var authorizedDurationType = DateUtil.DURATION_TYPES[AuthConstants.AUTHORIZED_DURATION_TYPE]; 
-    var tokenExpireTime = AuthConstants.AUTHORIZED_DURATION * authorizedDurationType;
-    return DateUtil.addTimeToNow( tokenExpireTime );
+module.exports.getExpiresIn = () => {
+    var authorizedDurationType = DateUtil.DURATION_TYPES[AuthConstants.AUTHORIZED_DURATION_TYPE];
+    return AuthConstants.AUTHORIZED_DURATION + authorizedDurationType
 }
 
 module.exports.generateToken = function (User) {
-    var expireDate = this.getExpireDate();
-    var token = jwt.sign({ _id: User._id.toHexString(), expireDate }, AuthConstants.JWT_SECRET).toString();
-    var tokenModel = { expireDate, token };
-    return tokenModel;
+    var expiresIn = this.getExpiresIn();
+    var token = jwt.sign({ _id: User._id.toHexString() }, AuthConstants.JWT_SECRET, {expiresIn: expiresIn} ).toString();
+    return token;
 };
 
 module.exports.parseToken = (token)=>{
