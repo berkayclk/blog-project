@@ -13,9 +13,9 @@
  - ``` npm start ``` - to start application.  
  - You can use api endpoints on http://127.0.0.1:8080/api
   
-To specify project, Tou can create an env file in project. Dotenv module will be read this. 
+To specify project, You can create an env file in project. Dotenv module will be read this. 
  #### Sample .env file
- > ##### These values is default in app.
+ > ##### These values are default in app.
 
 ```
 HOST=localhost
