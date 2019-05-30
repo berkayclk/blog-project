@@ -5,8 +5,8 @@ module.exports.addTimeToNow = (time) => {
 } 
 
 let DURATION_TYPES = {
-    DAY: 24 * 60 * 60 * 1000,
-    HOUR: 60 * 60 * 1000,
-    MINUTE: 60 * 1000
+    DAY: "d",
+    HOUR: "h",
+    MINUTE: "m"
 }
 module.exports.DURATION_TYPES = Object.freeze(DURATION_TYPES);
