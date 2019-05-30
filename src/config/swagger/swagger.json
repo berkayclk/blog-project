@@ -603,7 +603,9 @@
         "properties":{
           "result":{
             "type":"array",
-            "$ref":"#/definitions/User"
+            "items":{
+              "$ref":"#/definitions/User"
+            }
         }
       }
     },
@@ -611,9 +613,7 @@
       "properties":{
         "result":{
           "type":"object",
-          "items":{
-            "$ref":"#/definitions/Post"
-          }
+          "$ref":"#/definitions/Post"
         }
       }
     },
