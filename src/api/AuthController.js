@@ -11,8 +11,8 @@ var LogUtil = require("../utility/LogUtil");
 
 authController.post("/login",passport.authenticate('local',{session:false}) ,(req,res,next)=>{
     
-    const tokenModel = AuthUtil.generateToken(req.user);
-    var keyValue = AuthUtil.generateHeaderKeyValue(tokenModel.token);
+    const token = AuthUtil.generateToken(req.user);
+    var keyValue = AuthUtil.generateHeaderKeyValue(token);
     res.header(keyValue.key, keyValue.value).send();
 });
 

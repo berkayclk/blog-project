@@ -8,8 +8,8 @@ class AuthService{
             
             UserService.createUser(User)
                         .then( userResult => {
-                            var tokenModel = AuthUtil.generateToken(userResult);
-                            resolve(tokenModel.token);
+                            var token = AuthUtil.generateToken(userResult);
+                            resolve(token);
                         })
                         .catch( err => reject(err));
         });

@@ -10,8 +10,7 @@ module.exports.getExpiresIn = () => {
 module.exports.generateToken = function (User) {
     var expiresIn = this.getExpiresIn();
     var token = jwt.sign({ _id: User._id.toHexString() }, AuthConstants.JWT_SECRET, {expiresIn: expiresIn} ).toString();
-    var tokenModel = { expiresIn, token };
-    return tokenModel;
+    return token;
 };
 
 module.exports.parseToken = (token)=>{
