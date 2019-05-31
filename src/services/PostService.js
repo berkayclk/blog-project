@@ -3,116 +3,71 @@ const PostStatus = require("../constants/PostConstants").PostStaus;
 
 class PostService{
 
-    getAllPosts(){
-        return new Promise((resolve,reject) =>{
-           
-            Posts.find( (err,res) =>{
-                if( err )
-                    reject(err);
-                
-                resolve(res);
-            });
-       });
+    async getAllPosts(){
+        return await Posts.find();
     }
 
-    findById(postId){
-       return new Promise((resolve,reject) =>{
-            
-            Posts.findById(postId, (err,res) =>{
-                if( err )
-                    reject(err);
-                
-                resolve(res);
-            });
-       });
+    async findById(postId){
+        return await Posts.findById(postId);
     }
 
-    findByPostIdAndUser(postId,User){
-        return new Promise((resolve,reject) =>{
-             
-            var Followings = User.Following.map( followingUser => followingUser.id);
+    async findByPostIdAndUser(postId,User){
+        
+        var Followings = User.Following.map( followingUser => followingUser.id);
+
+        //User can view all own posts and public posts of followigs.
+        var conditions = {
+                _id: postId,
+            $or : [
+                {
+                    Author : { $in : Followings },
+                    Status : PostStatus.PUBLIC
+                },
+                {
+                    Author: User._id
+                }
+            ]
+        };
+
+        return await Posts.find(conditions);
+     }
+
+    async findByUser(User){
+        var Followings = User.Following.map( followingUser => followingUser.id);
 
             //User can view all own posts and public posts of followigs.
-            var conditions = {
-                 _id: postId,
-                $or : [
-                    {
-                        Author : { $in : Followings },
-                        Status : PostStatus.PUBLIC
-                    },
-                    {
-                        Author: User._id
-                    }
-                ]
-           };
+        var conditions = {
+            $or : [
+                {
+                    Author : { $in : Followings },
+                    Status : PostStatus.PUBLIC
+                },
+                {
+                    Author: User._id
+                }
+            ]
+            
+        };
 
-           Posts.find(conditions, (err,res) =>{
-               if( err )
-                   reject(err);
-               
-               resolve(res);
-           });
-        });
-     }
-
-    findByUser(User){
-        return new Promise((resolve,reject) =>{
-
-            var Followings = User.Following.map( followingUser => followingUser.id);
-
-             //User can view all own posts and public posts of followigs.
-            var conditions = {
-                $or : [
-                    {
-                        Author : { $in : Followings },
-                        Status : PostStatus.PUBLIC
-                    },
-                    {
-                        Author: User._id
-                    }
-                ]
-                
-            };
-
-            Posts.find(conditions, (err,res) =>{
-                if( err )
-                    reject(err);
-                
-                resolve(res);
-            });
-
-       });
+        return await Posts.find(conditions);
     }
        
-    createPost(post){
+    async createPost(post){
         var postModel = new Posts(post);
-        return postModel.save();
+        return await postModel.save();
      }
 
-     updatePost(post){
-        return new Promise((resolve,reject) =>{
-             
-            Posts.findOneAndUpdate(
+     async updatePost(post){  
+        return await Posts.findOneAndUpdate(
                         { _id : post._id }, // findById
                         post,            // updated with body in request
-                        {new:true, runValidators:true },     // return new updated data
-                        (err,res)=>{
-                            if(err) reject(err);
-                            resolve(res);
-                        });
-        });
+                        {new:true, runValidators:true });    // return new updated data
      }
 
-     deletePost(postId){
-        return new Promise((resolve,reject) =>{
-           
-            Posts.deleteOne( 
-                    { _id : postId }, // findById
-                    (err)=>{
-                        if(err) reject(err);
-                        resolve("Post is deleted");
-                    });
-        });
+     async deletePost(postId){
+        var result = await Posts.deleteOne( { _id : postId });
+        if( !result )
+            return new Error("Post could not be deleted!");
      }
 }
 
