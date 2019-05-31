@@ -4,204 +4,135 @@ const CryptoUtil = require("../utility/CryptoUtil");
 
 class UserService{
 
-    getAllUser(){
-        return new Promise((resolve,reject) =>{
-           
-            Users.find( (err,res) =>{
-                if( err )
-                    reject(err);
-                
-                resolve(res);
-            });
-       });
+    async getAllUser(){
+        return await Users.find();
     }
 
-    findById(userId){
-       return new Promise((resolve,reject) =>{
-            
-            Users.findById(userId, (err,res) =>{
-                if( err )
-                    reject(err);
-                
-                resolve(res);
-            });
-       });
+    async findById(userId){
+        
+        var user = await Users.findById(userId);
+        return user;
     }
 
-    findByUsernamePassword(Username,Password){
-        return new Promise((resolve,reject) =>{
-             
-             Users.findOne({ Username }, (err,userResult) =>{
-                if( err )
-                    reject("Username is wrong!");
-                
-                var encryptedPass = userResult.Password;
-                
-                CryptoUtil.compare(encryptedPass,Password)
-                                    .then( res => { resolve(userResult);})
-                                    .catch( err => reject("Wrong password!"))
-             });
-        });
+    async findByUsernamePassword(Username,Password) {
+
+        var user = await Users.findOne({ Username });
+        var encryptedPass = user.Password;
+        var isMatch = await CryptoUtil.compare(encryptedPass,Password);
+
+        if( !isMatch )
+            throw new Error("Password is incorrect!");
+        
+        return user;  
+        
      }
 
-    createUser(user){
+    async createUser(user){
         var user = UserUtil.pickNonSensitiveObject(user);
         var userModel = new Users(user);
-        return userModel.save();
+        return await userModel.save();
      }
 
-     updateUser(user){
-        return new Promise((resolve,reject) =>{
-            
-            Users.findOneAndUpdate(
+     async updateUser(user){    
+        
+        var user = await Users.findOneAndUpdate(
                         { _id : user._id }, // findById
                         user,            // updated with body in request
-                        {new:true, runValidators:true },     // return new updated data
-                        (err,res)=>{
-                            if(err) reject(err);
-                            resolve(res);
-                        });
-        });
+                        {new:true, runValidators:true }); // return new updated data
+            
+        return user;
      }
 
-     deleteUser(userId){
-        return new Promise((resolve,reject) =>{
-           
-            Users.deleteOne( 
-                    { _id : userId }, // findById
-                    (err)=>{
-                        if(err) reject(err);
-                        resolve("User deleted");
-                    });
-        });
+     async deleteUser(userId){           
+        await Users.deleteOne( { _id : userId }); // findById
      }
 
-     followUser( followerId, followingId ){
-       return new Promise( (resolve,reject) =>{
+     async followUser( followerId, followingId ){
+        
+        if( followerId == followingId )
+            new Error("Follower and following is same!");
+        
+        var followerUser = await this.findById(followerId); //find follower by Id
+        var followingUser = await this.findById(followingId); //find following by Id
+        await this.createRelation(followerUser, followingUser); //create realtion between follower and following.          
 
-            if( followerId == followingId )
-                reject("Follower and following is same!");
-                
-            var followerUser, followingUser;
-            this.findById(followerId) //find follower by Id
-                        .then(followerRes => {
-                            followerUser = followerRes;
-                            return this.findById(followingId); //find following by Id
-                        })
-                        .then( followingRes =>{
-                            followingUser = followingRes;
-                            return this.createRelation(followerUser, followingUser); //create realtion between follower and following.
-                        })
-                        .then( res=> {
-                            resolve(res);
-                        })
-                        .catch(err => {
-                            reject(err);
-                        });
-                       
-       });
     }
  
-    unfollowUser( followerId, followingId ){
-       
-        return new Promise( (resolve,reject) =>{
-            
-            var followerUser, followingUser;
-            this.findById(followerId) //find follower by Id
-                        .then(followerRes => {
-                            followerUser = followerRes;
-                            return this.findById(followingId); //find following by Id
-                        })
-                        .then( followingRes =>{
-                            followingUser = followingRes;
-                            return this.dropRelation(followerUser, followingUser); //drop realtion between follower and following.
-                        })
-                        .then( res=> {
-                            resolve(res);
-                        })
-                        .catch(err => {
-                            reject(err);
-                        });
-       });
+    async unfollowUser( followerId, followingId ){
+        if( followerId == followingId )
+            new Error("Follower and following is same!");
+    
+        var followerUser = await this.findById(followerId); //find follower by Id
+        var followingUser = await this.findById(followingId); //find following by Id
+        await this.dropRelation(followerUser, followingUser); //create realtion between follower and following.          
+
     }
 
-     createRelation( followerUser,followingUser){
-        return new Promise( (resolve,reject)=>{
-           
-           if( !followerUser || !followingUser )
-               reject("Create relation process is failed.");
+     async createRelation( followerUser,followingUser){
 
-           var updateOperations = [];
-           updateOperations.push(  //Push following user to follower user as unique
-               {   updateOne : {
-                       filter : { _id : followerUser._id, "Following.id" : { $ne :followingUser._id} },
-                       update : { $push : { Following:{ id: followingUser._id} } }
-                   } 
-               }
-           );
-           updateOperations.push( 
-               {   updateOne : { //Push follower user to following user as unique
-                       filter : { _id : followingUser._id , "Follower.id" : { $ne :followerUser._id}},
-                       update : { $push : { Follower:{ id: followerUser._id} } }
-                   } 
-               }
-           );
+        if( !followerUser || !followingUser )
+            return new Error("Create relation process is failed.");
 
-           Users.bulkWrite(updateOperations,(bulkErr,bulkRes)=>{
-               if( bulkErr || bulkRes.writeErrors )
-                   reject(bulkErr || bulkRes.writeErrors);
+        var updateOperations = [];
+        updateOperations.push(  //Push following user to follower user as unique
+            {   updateOne : {
+                    filter : { _id : followerUser._id, "Following.id" : { $ne :followingUser._id} },
+                    update : { $push : { Following:{ id: followingUser._id} } }
+                } 
+            }
+        );
+        updateOperations.push( 
+            {   updateOne : { //Push follower user to following user as unique
+                    filter : { _id : followingUser._id , "Follower.id" : { $ne :followerUser._id}},
+                    update : { $push : { Follower:{ id: followerUser._id} } }
+                } 
+            }
+        );
 
-               resolve();
-           });
-        });
+       var result = await Users.bulkWrite(updateOperations);
+       if( !result )
+            return new Error("Create relation error!")
     }
 
-    dropRelation( followerUser,followingUser){
-       return new Promise( (resolve,reject)=>{
+    async dropRelation( followerUser,followingUser){
            
-           if( !followerUser || !followingUser )
-               reject("Drop relation process is failed.");
+        if( !followerUser || !followingUser )
+            return new Error("Drop relation process is failed.");
 
-           var updateOperations = [];
-           updateOperations.push(  //pull following user to follower user as unique
-               {   updateOne : {
-                       filter : { _id : followerUser._id },
-                       update : { $pull : { Following:{ id: followingUser._id} } }
-                   } 
-               }
-           );
-           updateOperations.push( 
-               {   updateOne : { //pull follower user to following user as unique
-                       filter : { _id : followingUser._id },
-                       update : { $pull : { Follower:{ id: followerUser._id} } }
-                   } 
-               }
-           );
+        var updateOperations = [];
+        updateOperations.push(  //pull following user to follower user as unique
+            {   updateOne : {
+                    filter : { _id : followerUser._id },
+                    update : { $pull : { Following:{ id: followingUser._id} } }
+                } 
+            }
+        );
+        updateOperations.push( 
+            {   updateOne : { //pull follower user to following user as unique
+                    filter : { _id : followingUser._id },
+                    update : { $pull : { Follower:{ id: followerUser._id} } }
+                } 
+            }
+        );
 
-           Users.bulkWrite(updateOperations,(bulkErr,bulkRes)=>{
-               if( bulkErr || bulkRes.writeErrors )
-                   reject(bulkErr || bulkRes.writeErrors);
-
-               resolve(bulkRes);
-           });
-       });
+        var result = await Users.bulkWrite(updateOperations);
+        if( !result )
+            return new Error("Relation dropping error!");
    }
    
-   suggestUser(User){
-        return new Promise( (resolve,reject)=>{
-            var Followings = User.Following.map( followingUser => followingUser.id);
-            Users.find({
-                $and:[
-                    { _id: { $ne: User._id } },
-                    { _id: { $nin: Followings } }
-                ]
-            },(err, users)=>{
-               if( err )
-                    reject(err);
-                users = users.map( user => UserUtil.pickPublicVisibleFields(user) );
-                resolve(users);
-            });
+   async suggestUser(User){
+
+        var Followings = User.Following.map( followingUser => followingUser.id);
+        var users = await Users.find({
+            $and:[
+                { _id: { $ne: User._id } },
+                { _id: { $nin: Followings } }
+            ]
         });
+        
+        users = users.map( user => UserUtil.pickPublicVisibleFields(user) );
+
+        return users;
    }
    
 }
