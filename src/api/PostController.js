@@ -21,7 +21,7 @@ postController.get("/",  async (req,res,next)=>{
 
 });
 
-postController.post("/createPost", (req,res,next)=>{
+postController.post("/createPost", async (req,res,next)=>{
     
     if( !req.body.Post ){
         LogUtil.LogError( "postController - /createPost - Post is reqired in request body!" );
