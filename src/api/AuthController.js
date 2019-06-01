@@ -40,7 +40,7 @@ authController.post("/register", async (req,res,next)=>{
             .send();
 
     }catch( err ) {
-        LogUtil.LogError("Register"+cerr);
+        LogUtil.LogError("Register"+err);
         res.status(HttpResponseCode.BAD_REQUEST).send()
     };
 
