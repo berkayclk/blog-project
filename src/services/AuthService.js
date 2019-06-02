@@ -3,16 +3,10 @@ var AuthUtil = require("../utility/AuthUtil");
 
 class AuthService{
     
-    registerUser(User){
-        return new Promise( (resolve,reject)=>{
-            
-            UserService.createUser(User)
-                        .then( userResult => {
-                            var token = AuthUtil.generateToken(userResult);
-                            resolve(token);
-                        })
-                        .catch( err => reject(err));
-        });
+    async registerUser(User){  
+        var user = await UserService.createUser(User);
+        var token = AuthUtil.generateToken(user);
+        return token;
     } 
 
 }
